@@ -1,5 +1,5 @@
 [package]
-name = "opendeck-ng"
+name = "opendeck"
 version = "2.12.0"
 description = "Next-gen stream controller software for Linux"
 authors = ["Aman Khanna (nekename)"]
