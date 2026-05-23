@@ -7,37 +7,44 @@ OpenDeckNG ist ein Community-Driven Fork von OpenDeck, spezialisiert auf Linux (
 - Erweitertes Starter Pack für Linux-Desktop-Integration
 - Bessere Hyprland/Sway/i3-Unterstützung
 
-## Phase 1: Re-Brand & Foundation
+## Phase 1: Re-Brand & Foundation ✅
 - [x] Produktname auf OpenDeckNG umbenennen
 - [x] Cargo.toml, package.json, README.md aktualisiert
-- [ ] Git-Remote auf stefor74/OpenDeckNG (Repo erstellen)
-- [ ] Icons/Branding anpassen
+- [x] Git-Remote auf stefor74/OpenDeckNG (Repo erstellt und gepusht)
+- [x] Icons/Branding angepasst (App-Icon, Plugin-Icons, Static-Icons)
+- [x] Desktop-Datei, Metainfo, CI/CD auf NG umgestellt
 
-## Phase 2: Native GIF-Animation
-- [ ] GIF-Frame-Extraktion in `elgato.rs`
-- [ ] `AnimatedImage`-Task pro Button/Encoder
-- [ ] Loop mit konfigurierbarer Framerate
-- [ ] Memory-Management (alte Tasks stoppen bei `willDisappear`/`setImage`)
+## Phase 2: Native GIF-Animation ✅
+- [x] GIF-Frame-Extraktion in `animated_image.rs`
+- [x] `AnimatedImage`-Task pro Button/Encoder
+- [x] Loop mit konfigurierbarer Framerate
+- [x] Memory-Management (alte Tasks stoppen bei `willDisappear`/`setImage`)
 
-## Phase 3: Profile Backgrounds
-- [ ] `background_image` + `background_color` in Profile-Store
-- [ ] Hintergrund-Rendering unter Buttons (nur für Devices mit großem Display)
-- [ ] Webserver-Pfad für Background-Assets
-- [ ] Frontend-UI in SvelteKit
+## Phase 3: Profile Backgrounds 🟡
+- [x] `background_image` + `background_color` in Profile-Store
+- [x] Frontend-UI in SvelteKit (BackgroundPicker + Tabs)
+- [ ] Hintergrund-Rendering auf Hardware (komplex, elgato-streamdeck hat kein Layering)
 
-## Phase 4: Starter Pack NG (Linux Edition)
-- [ ] **Media Action** – MPRIS/D-Bus (Play/Pause, Next, Prev, Mute)
-- [ ] **Audio Volume** – PipeWire/PulseAudio (als Dial-Action)
-- [ ] **System Monitor** – CPU/RAM/Netzwerk (dynamischer Titel)
-- [ ] **Hyprland Window** – Workspace-Wechsel, Fenster-Fokus via `hyprctl`
-- [ ] **Notification** – D-Bus Notifications senden
-- [ ] **Counter/Timer** – Zähler hoch/runter, Stoppuhr
+## Phase 4: Starter Pack NG (Linux Edition) ✅
+- [x] **Media Action** – MPRIS/D-Bus (Play/Pause, Next, Prev, Mute)
+- [x] **Audio Volume** – PipeWire/PulseAudio (als Dial-Action)
+- [x] **System Monitor** – CPU/RAM/Netzwerk (dynamischer Titel)
+- [x] **Hyprland Window** – Workspace-Wechsel, Fenster-Fokus via `hyprctl`
+- [x] **Counter/Timer** – Zähler hoch/runter, Stoppuhr
+- [ ] **Notification** – D-Bus Notifications senden (optional)
 
-## Phase 5: StreamController-Adapter (optional)
+## Phase 5: StreamController-Adapter (optional) ⬜
 - [ ] Python-Sidecar für StreamController-Plugins
 - [ ] Bridge: Python-Plugin → OpenDeckNG WebSocket
 
-## Phase 6: Release
-- [ ] CI/CD für Linux Builds
-- [ ] AUR-Paket
+## Phase 6: Release ✅
+- [x] CI/CD für Linux Builds
+- [x] AUR-Paket (PKGBUILD + PKGBUILD-bin)
 - [ ] Flathub (optional)
+
+## Offene Punkte / Backlog
+- [ ] Flathub-Release
+- [ ] Backend-Background-Rendering auf Stream Deck LCD/Buttons
+- [ ] StreamController-Adapter
+- [ ] Notification Action (D-Bus)
+- [ ] Icons durch professionelles Design ersetzen (aktuell: Script-generiert)
