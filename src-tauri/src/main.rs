@@ -245,9 +245,9 @@ If you have already donated, thank you so much for your support!"#,
 
 			async fn update() -> Result<(), anyhow::Error> {
 				let res = reqwest::Client::new()
-					.get("https://api.github.com/repos/nekename/OpenDeck/releases/latest")
+					.get("https://api.github.com/repos/stefor74/OpenDeckNG/releases/latest")
 					.header("Accept", "application/vnd.github+json")
-					.header("User-Agent", "OpenDeck")
+					.header("User-Agent", "OpenDeckNG")
 					.send()
 					.await?
 					.json::<serde_json::Value>()

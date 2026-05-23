@@ -1,4 +1,4 @@
-# OpenDeck Development Guide
+# OpenDeckNG Development Guide
 
 ## Architecture Overview
 
