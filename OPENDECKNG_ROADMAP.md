@@ -31,7 +31,7 @@ OpenDeckNG ist ein Community-Driven Fork von OpenDeck, spezialisiert auf Linux (
 - [x] **System Monitor** – CPU/RAM/Netzwerk (dynamischer Titel)
 - [x] **Hyprland Window** – Workspace-Wechsel, Fenster-Fokus via `hyprctl`
 - [x] **Counter/Timer** – Zähler hoch/runter, Stoppuhr
-- [ ] **Notification** – D-Bus Notifications senden (optional)
+- [x] **Notification** – D-Bus Notifications senden
 
 ## Phase 5: StreamController-Adapter (optional) ⬜
 - [ ] Python-Sidecar für StreamController-Plugins
