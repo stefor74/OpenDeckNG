@@ -307,11 +307,26 @@ pub struct ActionInstance {
 	pub children: Option<Vec<ActionInstance>>,
 }
 
+#[derive(Clone, Serialize, Deserialize, Default)]
+pub enum BackgroundMode {
+	#[default]
+	Stretch,
+	Tile,
+	Center,
+	Cover,
+}
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Profile {
 	pub id: String,
 	pub keys: Vec<Option<ActionInstance>>,
 	pub sliders: Vec<Option<ActionInstance>>,
+	#[serde(default)]
+	pub background_image: Option<String>,
+	#[serde(default)]
+	pub background_color: Option<String>,
+	#[serde(default)]
+	pub background_mode: BackgroundMode,
 }
 
 /// A map of category names to a list of actions in that category.

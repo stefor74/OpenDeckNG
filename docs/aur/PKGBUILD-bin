@@ -1,0 +1,23 @@
+# Maintainer: Stefan Forster <stefor@stefor.net>
+pkgname=opendeckng-bin
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Next-gen stream controller software for Linux (OpenDeckNG fork, binary release)"
+arch=('x86_64' 'aarch64')
+url="https://github.com/stefor74/OpenDeckNG"
+license=('GPL-3.0-or-later')
+depends=('gtk3' 'webkit2gtk-4.1' 'libappindicator-gtk3' 'librsvg' 'libudev-zero' 'xdg-utils' 'playerctl')
+optdepends=('hyprland: Hyprland workspace integration'
+            'pipewire: Audio volume control via wpctl'
+            'pulseaudio: Audio volume control via pactl')
+conflicts=('opendeckng')
+provides=('opendeckng')
+source_x86_64=("$pkgname-$pkgver-x86_64.tar.gz::$url/releases/download/v$pkgver/opendeck-ng_${pkgver}_amd64.tar.gz")
+source_aarch64=("$pkgname-$pkgver-aarch64.tar.gz::$url/releases/download/v$pkgver/opendeck-ng_${pkgver}_arm64.tar.gz")
+sha256sums_x86_64=('SKIP')
+sha256sums_aarch64=('SKIP')
+
+package() {
+	install -Dm755 "$srcdir/opendeck-ng" "$pkgdir/usr/bin/opendeck-ng"
+	install -Dm644 "$srcdir/opendeck-ng.desktop" "$pkgdir/usr/share/applications/opendeck-ng.desktop"
+}

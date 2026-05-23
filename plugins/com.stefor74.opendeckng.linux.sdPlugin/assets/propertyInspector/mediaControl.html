@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="sdpi.css">
+</head>
+<body>
+	<div class="sdpi-wrapper">
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Action</div>
+			<select class="sdpi-item-value" id="action" onchange="updateSettings()">
+				<option value="playpause">Play / Pause</option>
+				<option value="next">Next Track</option>
+				<option value="previous">Previous Track</option>
+				<option value="stop">Stop</option>
+				<option value="mute">Mute Toggle</option>
+			</select>
+		</div>
+	</div>
+	<script>
+		function updateSettings() {
+			const action = document.getElementById('action').value;
+			if (window.opendeck) {
+				window.opendeck.setSettings({ action });
+			}
+		}
+		if (window.opendeck) {
+			window.opendeck.onSettingsReceived = (settings) => {
+				if (settings.action) document.getElementById('action').value = settings.action;
+			};
+		}
+	</script>
+</body>
+</html>

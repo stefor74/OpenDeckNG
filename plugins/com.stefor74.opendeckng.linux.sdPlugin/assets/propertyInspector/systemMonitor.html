@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="sdpi.css">
+</head>
+<body>
+	<div class="sdpi-wrapper">
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Metric</div>
+			<select class="sdpi-item-value" id="metric" onchange="updateSettings()">
+				<option value="cpu">CPU Usage</option>
+				<option value="ram">RAM Usage</option>
+				<option value="net_up">Network Upload</option>
+				<option value="net_down">Network Download</option>
+			</select>
+		</div>
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Interval (sec)</div>
+			<input class="sdpi-item-value" type="number" id="interval" value="2" min="1" max="60" onchange="updateSettings()">
+		</div>
+	</div>
+	<script>
+		function updateSettings() {
+			const metric = document.getElementById('metric').value;
+			const interval = parseInt(document.getElementById('interval').value) || 2;
+			if (window.opendeck) {
+				window.opendeck.setSettings({ metric, interval });
+			}
+		}
+		if (window.opendeck) {
+			window.opendeck.onSettingsReceived = (settings) => {
+				if (settings.metric) document.getElementById('metric').value = settings.metric;
+				if (settings.interval) document.getElementById('interval').value = settings.interval;
+			};
+		}
+	</script>
+</body>
+</html>

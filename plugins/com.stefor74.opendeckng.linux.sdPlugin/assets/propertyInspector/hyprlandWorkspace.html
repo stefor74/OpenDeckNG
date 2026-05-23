@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="sdpi.css">
+</head>
+<body>
+	<div class="sdpi-wrapper">
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Mode</div>
+			<select class="sdpi-item-value" id="mode" onchange="updateSettings()">
+				<option value="workspace">Switch to Workspace</option>
+				<option value="relative">Relative (+/-)</option>
+				<option value="togglefloating">Toggle Floating</option>
+				<option value="kill">Kill Active Window</option>
+				<option value="fullscreen">Toggle Fullscreen</option>
+				<option value="togglepin">Toggle Pin</option>
+			</select>
+		</div>
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Value</div>
+			<input class="sdpi-item-value" type="text" id="value" placeholder="1-10 or +/-" onchange="updateSettings()">
+		</div>
+	</div>
+	<script>
+		function updateSettings() {
+			const mode = document.getElementById('mode').value;
+			const value = document.getElementById('value').value;
+			if (window.opendeck) {
+				window.opendeck.setSettings({ mode, value });
+			}
+		}
+		if (window.opendeck) {
+			window.opendeck.onSettingsReceived = (settings) => {
+				if (settings.mode) document.getElementById('mode').value = settings.mode;
+				if (settings.value) document.getElementById('value').value = settings.value;
+			};
+		}
+	</script>
+</body>
+</html>

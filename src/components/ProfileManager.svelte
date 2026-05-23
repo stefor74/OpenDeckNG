@@ -2,12 +2,12 @@
 	import type { DeviceInfo } from "$lib/DeviceInfo";
 	import type { Profile } from "$lib/Profile";
 
-	import Browsers from "phosphor-svelte/lib/Browsers";
 	import Copy from "phosphor-svelte/lib/Copy";
 	import FloppyDisk from "phosphor-svelte/lib/FloppyDisk";
 	import Pencil from "phosphor-svelte/lib/Pencil";
 	import Trash from "phosphor-svelte/lib/Trash";
 	import Popup from "./Popup.svelte";
+	import BackgroundPicker from "./BackgroundPicker.svelte";
 
 	import { inspectedInstance } from "$lib/propertyInspector";
 
@@ -151,9 +151,9 @@
 	}
 
 	let showPopup: boolean = false;
+	let popupTab: "profiles" | "background" | "applications" = "profiles";
 	let nameInput: HTMLInputElement;
 
-	let showApplicationManager: boolean = false;
 	let applications: string[];
 	let applicationProfiles: { [appName: string]: { [device: string]: string } };
 	(async () => {
@@ -209,8 +209,7 @@
 <svelte:window
 	on:keydown={(event) => {
 		if (event.key == "Escape") {
-			if (showApplicationManager) showApplicationManager = false;
-			else if (renamingProfile) renamingProfile = null;
+			if (renamingProfile) renamingProfile = null;
 			else showPopup = false;
 		}
 	}}
@@ -220,151 +219,176 @@
 	<button class="mr-1 float-right text-xl text-neutral-300" on:click={() => showPopup = false} aria-label="Close">✕</button>
 	<h2 class="text-xl font-semibold text-neutral-300">{device.name}</h2>
 
-	<div class="flex flex-row mt-2 mb-1">
-		<input
-			bind:this={nameInput}
-			pattern="[a-zA-Z0-9_ ]+(\/[a-zA-Z0-9_ ]+)?"
-			class="grow p-2 text-neutral-300 invalid:text-red-400 bg-neutral-700 border-l border-y border-neutral-600 rounded-l-lg"
-			placeholder='Profile name or "folder/name"'
-			aria-label="Profile name"
-		/>
-
+	<!-- Tabs -->
+	<div class="flex flex-row mt-3 mb-2 border-b border-neutral-600">
 		<button
-			on:click={async () => {
-				if (!nameInput.checkValidity() || !nameInput.value) return;
-				await setProfile(nameInput.value);
-				value = nameInput.value;
-				nameInput.value = "";
-				showPopup = false;
-			}}
-			class="px-4 text-neutral-300 bg-neutral-900 hover:bg-neutral-800 transition-colors border-r border-y border-neutral-600 rounded-r-lg"
+			class="px-4 py-2 text-sm font-medium transition-colors"
+			class:text-green-400={popupTab === "profiles"}
+			class:text-neutral-400={popupTab !== "profiles"}
+			class:border-b-2={popupTab === "profiles"}
+			class:border-green-400={popupTab === "profiles"}
+			on:click={() => popupTab = "profiles"}
 		>
-			Create
+			Profiles
 		</button>
-
 		<button
-			class="ml-2 px-4 flex items-center text-neutral-300 bg-neutral-900 hover:bg-neutral-800 transition-colors border border-neutral-600 rounded-lg"
-			on:click={() => showApplicationManager = true}
-			aria-label="Application profiles"
+			class="px-4 py-2 text-sm font-medium transition-colors"
+			class:text-green-400={popupTab === "background"}
+			class:text-neutral-400={popupTab !== "background"}
+			class:border-b-2={popupTab === "background"}
+			class:border-green-400={popupTab === "background"}
+			on:click={() => popupTab = "background"}
 		>
-			<Browsers size={24} />
+			Background
+		</button>
+		<button
+			class="px-4 py-2 text-sm font-medium transition-colors"
+			class:text-green-400={popupTab === "applications"}
+			class:text-neutral-400={popupTab !== "applications"}
+			class:border-b-2={popupTab === "applications"}
+			class:border-green-400={popupTab === "applications"}
+			on:click={() => popupTab = "applications"}
+		>
+			Applications
 		</button>
 	</div>
 
-	<div class="divide-y divide-neutral-500!">
-		{#each Object.entries(folders).sort() as [id, profiles]}
-			{#if id && profiles.length}
-				<h4 class="py-2 font-bold text-lg text-neutral-300">{id}</h4>
-			{/if}
-			{#each profiles.sort() as profile}
-				<div class="flex flex-row items-center py-2 space-x-2" class:ml-6={id} class:pl-2={id}>
-					<input type="radio" bind:group={value} value={profile} disabled={renamingProfile == profile} id={`profile-${encodeURIComponent(profile)}`} aria-label={id ? profile.split("/")[1] : profile} />
-					{#if profile == renamingProfile}
-						<input
-							bind:this={renameInput}
-							bind:value={newId}
-							pattern="[a-zA-Z0-9_ ]+(\/[a-zA-Z0-9_ ]+)?"
-							class="grow px-2 py-1 text-neutral-300 invalid:text-red-400 bg-neutral-700 rounded"
-							placeholder='Profile name or "folder/name"'
-							on:keydown={(e) => {
-								if (e.key === "Enter") saveRenamedProfile(profile);
-							}}
-						/>
-						<button on:click={() => saveRenamedProfile(profile)} title="Save" aria-label="Save">
-							<FloppyDisk size="20" class="text-green-500" />
-						</button>
-					{:else}
-						<label class="grow text-neutral-400" for={`profile-${encodeURIComponent(profile)}`}>{id ? profile.split("/")[1] : profile}</label>
-						<button on:click={() => duplicateProfile(profile)} title="Duplicate" aria-label="Duplicate">
-							<Copy size="20" class="text-neutral-400" />
-						</button>
-						{#if profile != value}
-							<button
-								on:click={() => renamingProfile = newId = profile}
-								title="Rename"
-								aria-label="Rename"
-							>
-								<Pencil size="20" class="text-neutral-400" />
-							</button>
-							<button on:click={() => deleteProfile(profile)} title="Delete" aria-label="Delete">
-								<Trash size="20" class="text-neutral-400" />
-							</button>
-						{/if}
-					{/if}
-				</div>
-			{/each}
-		{/each}
-	</div>
-</Popup>
+	{#if popupTab === "profiles"}
+		<div class="flex flex-row mt-2 mb-1">
+			<input
+				bind:this={nameInput}
+				pattern="[a-zA-Z0-9_ ]+(\/[a-zA-Z0-9_ ]+)?"
+				class="grow p-2 text-neutral-300 invalid:text-red-400 bg-neutral-700 border-l border-y border-neutral-600 rounded-l-lg"
+				placeholder='Profile name or "folder/name"'
+				aria-label="Profile name"
+			/>
 
-<Popup show={showApplicationManager} label="Application profiles">
-	<button class="mr-1 float-right text-xl text-neutral-300" on:click={() => showApplicationManager = false} aria-label="Close">✕</button>
-	<h2 class="text-xl font-semibold text-neutral-300">{device.name}</h2>
-	<span class="text-sm text-neutral-400">If your application isn't listed, try switching to it and back again.</span>
-	<span class="text-sm text-neutral-400">The 'default profile' will activate when the focussed application has no profile associated with it.</span>
+			<button
+				on:click={async () => {
+					if (!nameInput.checkValidity() || !nameInput.value) return;
+					await setProfile(nameInput.value);
+					value = nameInput.value;
+					nameInput.value = "";
+					showPopup = false;
+				}}
+				class="px-4 text-neutral-300 bg-neutral-900 hover:bg-neutral-800 transition-colors border-r border-y border-neutral-600 rounded-r-lg"
+			>
+				Create
+			</button>
+		</div>
 
-	<table class="w-full text-neutral-300 divide-y divide-neutral-500!">
-		{#each Object.entries(applicationProfiles).sort((a, b) => a[0] == "opendeck_default" ? -1 : b[0] == "opendeck_default" ? 1 : a[0].localeCompare(b[0])) as [appName, devices]}
-			{#if devices[device.id]}
-				<tr class="h-12">
-					<td>{appName == "opendeck_default" ? "Default profile" : appName}:</td>
-					<td class="select-wrapper">
-						<select bind:value={applicationProfiles[appName][device.id]} class="w-full" aria-label="{appName == 'opendeck_default' ? 'Default profile' : appName} profile">
-							{#each Object.entries(folders) as [id, profiles]}
-								{#if id && profiles.length}
-									<optgroup label={id}>
-										{#each profiles as profile}
-											<option value={profile}>{profile.split("/")[1]}</option>
-										{/each}
-									</optgroup>
-								{:else}
-									{#each profiles as profile}
-										<option value={profile}>{profile}</option>
-									{/each}
-								{/if}
-							{/each}
-							<option disabled>──────────</option>
-							<option value={undefined}>Remove application</option>
-						</select>
-					</td>
-				</tr>
-			{/if}
-		{/each}
-		<tr class="h-12">
-			<td class="w-48 select-wrapper">
-				<select bind:value={applicationsAddAppName} class="w-full" aria-label="Select application">
-					<option selected disabled value="opendeck_select_application">Select application...</option>
-					{#if !applicationProfiles["opendeck_default"] || !applicationProfiles["opendeck_default"][device.id]}
-						<option value="opendeck_default">Default profile</option>
-						{#if applications.filter((appName) => !applicationProfiles[appName] || !applicationProfiles[appName][device.id]).length > 0}
-							<option disabled>──────────</option>
-						{/if}
-					{/if}
-					{#each applications as appName}
-						{#if !applicationProfiles[appName] || !applicationProfiles[appName][device.id]}
-							<option value={appName}>{appName}</option>
-						{/if}
-					{/each}
-				</select>
-			</td>
-			<td class="w-96 select-wrapper">
-				<select bind:value={applicationsAddProfile} class="w-full" aria-label="Select profile">
-					<option selected disabled value="opendeck_select_profile">Select profile...</option>
-					{#each Object.entries(folders) as [id, profiles]}
-						{#if id && profiles.length}
-							<optgroup label={id}>
-								{#each profiles as profile}
-									<option value={profile}>{profile.split("/")[1]}</option>
-								{/each}
-							</optgroup>
+		<div class="divide-y divide-neutral-500!">
+			{#each Object.entries(folders).sort() as [id, profiles]}
+				{#if id && profiles.length}
+					<h4 class="py-2 font-bold text-lg text-neutral-300">{id}</h4>
+				{/if}
+				{#each profiles.sort() as profile}
+					<div class="flex flex-row items-center py-2 space-x-2" class:ml-6={id} class:pl-2={id}>
+						<input type="radio" bind:group={value} value={profile} disabled={renamingProfile == profile} id={`profile-${encodeURIComponent(profile)}`} aria-label={id ? profile.split("/")[1] : profile} />
+						{#if profile == renamingProfile}
+							<input
+								bind:this={renameInput}
+								bind:value={newId}
+								pattern="[a-zA-Z0-9_ ]+(\/[a-zA-Z0-9_ ]+)?"
+								class="grow px-2 py-1 text-neutral-300 invalid:text-red-400 bg-neutral-700 rounded"
+								placeholder='Profile name or "folder/name"'
+								on:keydown={(e) => {
+									if (e.key === "Enter") saveRenamedProfile(profile);
+								}}
+							/>
+							<button on:click={() => saveRenamedProfile(profile)} title="Save" aria-label="Save">
+								<FloppyDisk size="20" class="text-green-500" />
+							</button>
 						{:else}
-							{#each profiles as profile}
-								<option value={profile}>{profile}</option>
-							{/each}
+							<label class="grow text-neutral-400" for={`profile-${encodeURIComponent(profile)}`}>{id ? profile.split("/")[1] : profile}</label>
+							<button on:click={() => duplicateProfile(profile)} title="Duplicate" aria-label="Duplicate">
+								<Copy size="20" class="text-neutral-400" />
+							</button>
+							{#if profile != value}
+								<button
+									on:click={() => renamingProfile = newId = profile}
+									title="Rename"
+									aria-label="Rename"
+								>
+									<Pencil size="20" class="text-neutral-400" />
+								</button>
+								<button on:click={() => deleteProfile(profile)} title="Delete" aria-label="Delete">
+									<Trash size="20" class="text-neutral-400" />
+								</button>
+							{/if}
 						{/if}
-					{/each}
-				</select>
-			</td>
-		</tr>
-	</table>
+					</div>
+				{/each}
+			{/each}
+		</div>
+	{:else if popupTab === "background"}
+		<BackgroundPicker {device} profileId={value || profile.id} />
+	{:else if popupTab === "applications"}
+		<div class="text-sm text-neutral-400 mb-2">If your application isn't listed, try switching to it and back again.</div>
+		<div class="text-sm text-neutral-400 mb-4">The 'default profile' will activate when the focussed application has no profile associated with it.</div>
+		<table class="w-full text-neutral-300 divide-y divide-neutral-500!">
+			{#each Object.entries(applicationProfiles).sort((a, b) => a[0] == "opendeck_default" ? -1 : b[0] == "opendeck_default" ? 1 : a[0].localeCompare(b[0])) as [appName, devices]}
+				{#if devices[device.id]}
+					<tr class="h-12">
+						<td>{appName == "opendeck_default" ? "Default profile" : appName}:</td>
+						<td class="select-wrapper">
+							<select bind:value={applicationProfiles[appName][device.id]} class="w-full" aria-label="{appName == 'opendeck_default' ? 'Default profile' : appName} profile">
+								{#each Object.entries(folders) as [id, profiles]}
+									{#if id && profiles.length}
+										<optgroup label={id}>
+											{#each profiles as profile}
+												<option value={profile}>{profile.split("/")[1]}</option>
+											{/each}
+										</optgroup>
+									{:else}
+										{#each profiles as profile}
+											<option value={profile}>{profile}</option>
+										{/each}
+									{/if}
+								{/each}
+								<option disabled>──────────</option>
+								<option value={undefined}>Remove application</option>
+							</select>
+						</td>
+					</tr>
+				{/if}
+			{/each}
+			<tr class="h-12">
+				<td class="w-48 select-wrapper">
+					<select bind:value={applicationsAddAppName} class="w-full" aria-label="Select application">
+						<option selected disabled value="opendeck_select_application">Select application...</option>
+						{#if !applicationProfiles["opendeck_default"] || !applicationProfiles["opendeck_default"][device.id]}
+							<option value="opendeck_default">Default profile</option>
+							{#if applications.filter((appName) => !applicationProfiles[appName] || !applicationProfiles[appName][device.id]).length > 0}
+								<option disabled>──────────</option>
+							{/if}
+						{/if}
+						{#each applications as appName}
+							{#if !applicationProfiles[appName] || !applicationProfiles[appName][device.id]}
+								<option value={appName}>{appName}</option>
+							{/if}
+						{/each}
+					</select>
+				</td>
+				<td class="w-96 select-wrapper">
+					<select bind:value={applicationsAddProfile} class="w-full" aria-label="Select profile">
+						<option selected disabled value="opendeck_select_profile">Select profile...</option>
+						{#each Object.entries(folders) as [id, profiles]}
+							{#if id && profiles.length}
+								<optgroup label={id}>
+									{#each profiles as profile}
+										<option value={profile}>{profile.split("/")[1]}</option>
+									{/each}
+								</optgroup>
+							{:else}
+								{#each profiles as profile}
+									<option value={profile}>{profile}</option>
+								{/each}
+							{/if}
+						{/each}
+					</select>
+				</td>
+			</tr>
+		</table>
+	{/if}
 </Popup>

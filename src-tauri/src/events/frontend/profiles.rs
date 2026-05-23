@@ -101,6 +101,50 @@ pub async fn rename_profile(device: String, old_id: String, new_id: String, reta
 	Ok(())
 }
 
+#[command]
+pub async fn get_background(device: String, profile: String) -> Result<(Option<String>, Option<String>, String), Error> {
+	let mut locks = acquire_locks_mut().await;
+	if !DEVICES.contains_key(&device) {
+		return Err(Error::new(format!("device {device} not found")));
+	}
+
+	let store = locks.profile_stores.get_profile_store(&DEVICES.get(&device).unwrap(), &profile)?;
+	let bg = &store.value;
+	let mode = match bg.background_mode {
+		crate::shared::BackgroundMode::Stretch => "stretch",
+		crate::shared::BackgroundMode::Tile => "tile",
+		crate::shared::BackgroundMode::Center => "center",
+		crate::shared::BackgroundMode::Cover => "cover",
+	};
+	Ok((bg.background_image.clone(), bg.background_color.clone(), mode.to_owned()))
+}
+
+#[command]
+pub async fn set_background(
+	device: String,
+	profile: String,
+	image: Option<String>,
+	color: Option<String>,
+	mode: String,
+) -> Result<(), Error> {
+	let mut locks = acquire_locks_mut().await;
+	if !DEVICES.contains_key(&device) {
+		return Err(Error::new(format!("device {device} not found")));
+	}
+
+	let store = locks.profile_stores.get_profile_store_mut(&DEVICES.get(&device).unwrap(), &profile).await?;
+	store.value.background_image = image;
+	store.value.background_color = color;
+	store.value.background_mode = match mode.as_str() {
+		"tile" => crate::shared::BackgroundMode::Tile,
+		"center" => crate::shared::BackgroundMode::Center,
+		"cover" => crate::shared::BackgroundMode::Cover,
+		_ => crate::shared::BackgroundMode::Stretch,
+	};
+	store.save()?;
+	Ok(())
+}
+
 pub async fn rerender_images(app: &AppHandle) -> Result<(), anyhow::Error> {
 	let window = app.get_webview_window("main").unwrap();
 	window.emit("rerender_images", ())?;

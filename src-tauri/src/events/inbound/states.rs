@@ -58,6 +58,17 @@ pub async fn set_title(event: ContextAndPayloadEvent<SetTitlePayload>) -> Result
 }
 
 pub async fn set_image(mut event: ContextAndPayloadEvent<SetImagePayload>) -> Result<(), anyhow::Error> {
+	// NEU: GIF-Animation erkennen und starten
+	if let Some(image) = &event.payload.image {
+		if image.starts_with("data:image/gif") {
+			let data = image.split_once(',').unwrap().1;
+			let bytes = base64::engine::general_purpose::STANDARD.decode(data)?;
+			crate::animated_image::start_animation(event.context.clone(), bytes).await?;
+			// GIF wird nicht als statisches State-Bild gespeichert, sondern separat verwaltet
+			return Ok(());
+		}
+	}
+
 	let mut locks = acquire_locks_mut().await;
 
 	if let Some(instance) = get_instance_mut(&event.context, &mut locks).await? {

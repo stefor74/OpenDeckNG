@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod animated_image;
 mod application_watcher;
 mod device_sleep;
 mod elgato;
@@ -86,6 +87,8 @@ async fn main() {
 			frontend::profiles::set_selected_profile,
 			frontend::profiles::delete_profile,
 			frontend::profiles::rename_profile,
+			frontend::profiles::get_background,
+			frontend::profiles::set_background,
 			frontend::property_inspector::make_info,
 			frontend::property_inspector::switch_property_inspector,
 			frontend::property_inspector::open_url,

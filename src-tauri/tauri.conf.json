@@ -12,23 +12,23 @@
 		"resources": { "target/plugins/": "plugins/" },
 		"linux": {
 			"deb": {
-				"desktopTemplate": "bundle/opendeck.desktop",
+				"desktopTemplate": "bundle/opendeckng.desktop",
 				"files": {
 					"/etc/udev/rules.d/40-streamdeck.rules": "bundle/40-streamdeck.rules",
-					"/usr/share/metainfo/opendeck.metainfo.xml": "bundle/opendeck.metainfo.xml"
+					"/usr/share/metainfo/opendeckng.metainfo.xml": "bundle/opendeckng.metainfo.xml"
 				}
 			},
 			"rpm": {
 				"desktopTemplate": "bundle/opendeck.desktop",
 				"files": {
 					"/etc/udev/rules.d/40-streamdeck.rules": "bundle/40-streamdeck.rules",
-					"/usr/share/metainfo/opendeck.metainfo.xml": "bundle/opendeck.metainfo.xml"
+					"/usr/share/metainfo/opendeckng.metainfo.xml": "bundle/opendeckng.metainfo.xml"
 				}
 			}
 		},
-		"publisher": "Aman Khanna (nekename)",
-		"shortDescription": "Use stream controllers",
-		"longDescription": "OpenDeck is a desktop application for using stream controller devices like the Elgato Stream Deck. OpenDeck supports plugins made for the original Stream Deck SDK, allowing many plugins made for the Elgato software ecosystem to be used.",
+		"publisher": "Stefan Forster (stefor74)",
+		"shortDescription": "Next-gen stream controller for Linux",
+		"longDescription": "OpenDeckNG is a community-driven Linux-focused fork of OpenDeck. It brings native Linux desktop integration, GIF animation support, profile backgrounds, and an enhanced starter pack for Linux users running CachyOS, Arch, and Hyprland.",
 		"category": "Productivity",
 		"icon": [
 			"icons/icon.png",
@@ -40,9 +40,9 @@
 			"signingIdentity": "-"
 		}
 	},
-	"productName": "OpenDeck",
-	"mainBinaryName": "opendeck",
-	"identifier": "opendeck",
+	"productName": "OpenDeckNG",
+	"mainBinaryName": "opendeck-ng",
+	"identifier": "com.stefor74.opendeckng",
 	"plugins": {
 		"deep-link": {
 			"desktop": {

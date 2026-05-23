@@ -1,5 +1,8 @@
 {
 	"exclude": ["src-tauri", "node_modules", "build", ".svelte-kit"],
+	"tasks": {
+		"build:plugins": "deno run --allow-all build-plugins.ts"
+	},
 	"fmt": {
 		"exclude": ["**/*.md", "**/.*/**/*.md"],
 		"useTabs": true,

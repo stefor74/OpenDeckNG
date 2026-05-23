@@ -14,15 +14,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: "macos-latest"
-            args: "--target aarch64-apple-darwin"
-          - platform: "macos-latest"
-            args: "--target x86_64-apple-darwin"
           - platform: "ubuntu-22.04"
             args: ""
           - platform: "ubuntu-22.04-arm"
-            args: ""
-          - platform: "windows-latest"
             args: ""
     runs-on: ${{ matrix.platform }}
     env:
@@ -35,8 +29,6 @@ jobs:
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -63,14 +55,29 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libudev-dev xdg-utils libdbus-1-dev
 
+      - name: Build Linux Starter Pack plugin
+        run: |
+          deno task build:plugins
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tauriScript: deno task tauri
           tagName: tv__VERSION__
-          releaseName: "OpenDeck v__VERSION__"
-          releaseBody: "See the assets to download this version. See the README for installation instructions."
+          releaseName: "OpenDeckNG v__VERSION__"
+          releaseBody: |
+            OpenDeckNG – Next-gen stream controller for Linux.
+
+            ## Installation
+            - **Arch/CachyOS**: Install via AUR (`opendeckng` or `opendeckng-bin`)
+            - **Other distros**: Download the `.tar.gz` or `.deb` from assets
+            - **Hyprland users**: See the wiki for integration tips
+
+            ## What's New
+            - Native GIF animation support
+            - Linux Starter Pack (Media, Audio, System Monitor, Hyprland, Counter)
+            - Profile backgrounds (experimental)
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}

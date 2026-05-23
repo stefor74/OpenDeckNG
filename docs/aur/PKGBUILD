@@ -1,0 +1,29 @@
+# Maintainer: Stefan Forster <stefor@stefor.net>
+pkgname=opendeckng
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Next-gen stream controller software for Linux (OpenDeckNG fork)"
+arch=('x86_64' 'aarch64')
+url="https://github.com/stefor74/OpenDeckNG"
+license=('GPL-3.0-or-later')
+depends=('gtk3' 'webkit2gtk-4.1' 'libappindicator-gtk3' 'librsvg' 'libudev-zero' 'xdg-utils' 'playerctl')
+makedepends=('rust' 'cargo' 'deno' 'git')
+optdepends=('hyprland: Hyprland workspace integration'
+            'pipewire: Audio volume control via wpctl'
+            'pulseaudio: Audio volume control via pactl')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+	cd "$srcdir/OpenDeckNG-$pkgver"
+	deno install
+	deno task build:plugins
+	deno task tauri build
+}
+
+package() {
+	cd "$srcdir/OpenDeckNG-$pkgver"
+	install -Dm755 "src-tauri/target/release/bundle/deb/opendeck-ng_${pkgver}_amd64/data/usr/bin/opendeck-ng" "$pkgdir/usr/bin/opendeck-ng"
+	install -Dm644 "src-tauri/target/release/bundle/deb/opendeck-ng_${pkgver}_amd64/data/usr/share/applications/opendeck-ng.desktop" "$pkgdir/usr/share/applications/opendeck-ng.desktop"
+	install -Dm644 "src-tauri/target/release/bundle/deb/opendeck-ng_${pkgver}_amd64/data/usr/share/icons/hicolor/128x128/apps/opendeck-ng.png" "$pkgdir/usr/share/icons/hicolor/128x128/apps/opendeck-ng.png"
+}

@@ -30,6 +30,9 @@ pub async fn will_appear(instance: &ActionInstance) -> Result<(), anyhow::Error>
 }
 
 pub async fn will_disappear(instance: &ActionInstance, clear_on_device: bool) -> Result<(), anyhow::Error> {
+	// NEU: Animation stoppen
+	crate::animated_image::stop_animation(&(&instance.context).into()).await;
+
 	send_to_plugin(
 		&instance.action.plugin,
 		&AppearEvent {

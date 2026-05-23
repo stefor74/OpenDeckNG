@@ -1,9 +1,9 @@
 {
-	"name": "opendeck",
+	"name": "opendeck-ng",
 	"description": "Next-gen stream controller software for Linux",
-	"author": "Aman Khanna (nekename)",
+	"author": "Stefan Forster (stefor74)",
 	"license": "GPL-3.0-or-later",
-	"repository": "https://github.com/nekename/OpenDeck",
+	"repository": "https://github.com/stefor74/OpenDeckNG",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",

@@ -1,11 +1,11 @@
 [package]
-name = "opendeck"
+name = "opendeck-ng"
 version = "2.12.0"
 description = "Next-gen stream controller software for Linux"
-authors = ["Aman Khanna (nekename)"]
+authors = ["Stefan Forster (stefor74)"]
 license = "GPL-3.0-or-later"
-repository = "https://github.com/nekename/OpenDeck"
-default-run = "opendeck"
+repository = "https://github.com/stefor74/OpenDeckNG"
+default-run = "opendeck-ng"
 edition = "2024"
 
 [build-dependencies]
@@ -22,7 +22,8 @@ tokio-tungstenite = "0.28"
 tiny_http = "0.12"
 elgato-streamdeck = { version = "0.12", default-features = false, features = ["async"] }
 hidapi = "2.6"
-image = { version = "0.25", default-features = false, features = ["bmp", "jpeg"] }
+image = { version = "0.25", default-features = false, features = ["bmp", "jpeg", "png"] }
+gif = "0.13"
 # Smaller utility libraries
 dashmap = { version = "6.1", features = ["serde"] }
 futures = "0.3"

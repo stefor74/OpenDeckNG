@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="sdpi.css">
+</head>
+<body>
+	<div class="sdpi-wrapper">
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Mode</div>
+			<select class="sdpi-item-value" id="mode" onchange="updateSettings()">
+				<option value="counter">Counter</option>
+				<option value="timer">Timer (countdown)</option>
+				<option value="stopwatch">Stopwatch</option>
+			</select>
+		</div>
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Step / Initial</div>
+			<input class="sdpi-item-value" type="number" id="step" value="1" onchange="updateSettings()">
+		</div>
+	</div>
+	<script>
+		function updateSettings() {
+			const mode = document.getElementById('mode').value;
+			const step = parseInt(document.getElementById('step').value) || 1;
+			if (window.opendeck) {
+				window.opendeck.setSettings({ mode, step, initial: step });
+			}
+		}
+		if (window.opendeck) {
+			window.opendeck.onSettingsReceived = (settings) => {
+				if (settings.mode) document.getElementById('mode').value = settings.mode;
+				if (settings.step) document.getElementById('step').value = settings.step;
+			};
+		}
+	</script>
+</body>
+</html>

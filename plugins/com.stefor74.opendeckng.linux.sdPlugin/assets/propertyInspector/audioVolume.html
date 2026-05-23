@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="sdpi.css">
+</head>
+<body>
+	<div class="sdpi-wrapper">
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Step Size</div>
+			<input class="sdpi-item-value" type="number" id="step" value="5" min="1" max="50" onchange="updateSettings()">
+		</div>
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Show Volume</div>
+			<input type="checkbox" id="show_volume" onchange="updateSettings()">
+		</div>
+	</div>
+	<script>
+		function updateSettings() {
+			const step = parseInt(document.getElementById('step').value) || 5;
+			const show_volume = document.getElementById('show_volume').checked;
+			if (window.opendeck) {
+				window.opendeck.setSettings({ step, show_volume });
+			}
+		}
+		if (window.opendeck) {
+			window.opendeck.onSettingsReceived = (settings) => {
+				if (settings.step) document.getElementById('step').value = settings.step;
+				document.getElementById('show_volume').checked = settings.show_volume || false;
+			};
+		}
+	</script>
+</body>
+</html>
