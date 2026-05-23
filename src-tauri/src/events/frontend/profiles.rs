@@ -78,7 +78,15 @@ pub async fn set_selected_profile(device: String, id: String) -> Result<(), Erro
 	}
 	store.save()?;
 
-	locks.device_stores.set_selected_profile(&device, id)?;
+	locks.device_stores.set_selected_profile(&device, id.clone())?;
+
+	// NEU: Hintergrund laden und rendern
+	if let Some(bg_image) = new_profile.background_image.as_ref() {
+		let _ = crate::background_renderer::load_background(&device, &id, bg_image).await;
+		let _ = crate::background_renderer::render_background(&device, &id).await;
+	} else {
+		crate::background_renderer::clear_background(&device, &id).await;
+	}
 
 	Ok(())
 }
@@ -142,6 +150,15 @@ pub async fn set_background(
 		_ => crate::shared::BackgroundMode::Stretch,
 	};
 	store.save()?;
+
+	// NEU: Hintergrund-Cache aktualisieren und rendern
+	if let Some(bg_image) = image.as_ref() {
+		let _ = crate::background_renderer::load_background(&device, &profile, bg_image).await;
+		let _ = crate::background_renderer::render_background(&device, &profile).await;
+	} else {
+		crate::background_renderer::clear_background(&device, &profile).await;
+	}
+
 	Ok(())
 }
 

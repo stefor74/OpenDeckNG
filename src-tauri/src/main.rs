@@ -3,6 +3,7 @@
 
 mod animated_image;
 mod application_watcher;
+mod background_renderer;
 mod device_sleep;
 mod elgato;
 mod events;

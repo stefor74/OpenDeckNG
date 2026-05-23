@@ -26,6 +26,14 @@ fn extract_average_colour(img: &image::DynamicImage) -> (u8, u8, u8) {
 }
 
 pub async fn update_image(context: &crate::shared::Context, image: Option<&str>) -> Result<(), anyhow::Error> {
+	// NEU: Hintergrund-Compositing für klassische Devices
+	let image = if context.controller == "Keypad" {
+		crate::background_renderer::composite_button_image(context, image).await?
+	} else {
+		image.map(|s| s.to_owned())
+	};
+	let image = image.as_deref();
+
 	if let Some(device) = ELGATO_DEVICES.read().await.get(&context.device) {
 		let kind = device.kind();
 		if !kind.is_visual() {
