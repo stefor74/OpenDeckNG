@@ -65,6 +65,16 @@
 			"Tooltip": "Increment or decrement a counter",
 			"UUID": "com.stefor74.opendeckng.linux.counter",
 			"PropertyInspectorPath": "propertyInspector/counter.html"
+		},
+		{
+			"Icon": "icons/plugin",
+			"Name": "Notification",
+			"States": [{ "Image": "actionDefaultImage" }],
+			"Controllers": ["Keypad", "Encoder"],
+			"SupportedInMultiActions": true,
+			"Tooltip": "Send a desktop notification",
+			"UUID": "com.stefor74.opendeckng.linux.notification",
+			"PropertyInspectorPath": "propertyInspector/notification.html"
 		}
 	]
 }

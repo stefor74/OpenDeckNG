@@ -1,6 +1,7 @@
 mod counter;
 mod hyprland;
 mod media;
+mod notification;
 mod system_monitor;
 mod volume;
 
@@ -30,6 +31,7 @@ async fn main() -> OpenActionResult<()> {
 	register_action(system_monitor::SystemMonitorAction).await;
 	register_action(hyprland::HyprlandWorkspaceAction).await;
 	register_action(counter::CounterAction).await;
+	register_action(notification::NotificationAction).await;
 
 	run(std::env::args().collect()).await
 }

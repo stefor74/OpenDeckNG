@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="sdpi.css">
+</head>
+<body>
+	<div class="sdpi-wrapper">
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Title</div>
+			<input class="sdpi-item-value" type="text" id="title" placeholder="Notification title" onchange="updateSettings()">
+		</div>
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Body</div>
+			<input class="sdpi-item-value" type="text" id="body" placeholder="Notification body" onchange="updateSettings()">
+		</div>
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Urgency</div>
+			<select class="sdpi-item-value" id="urgency" onchange="updateSettings()">
+				<option value="low">Low</option>
+				<option value="normal" selected>Normal</option>
+				<option value="critical">Critical</option>
+			</select>
+		</div>
+		<div class="sdpi-item">
+			<div class="sdpi-item-label">Icon</div>
+			<input class="sdpi-item-value" type="text" id="icon" placeholder="dialog-information" onchange="updateSettings()">
+		</div>
+	</div>
+	<script>
+		function updateSettings() {
+			const title = document.getElementById('title').value;
+			const body = document.getElementById('body').value;
+			const urgency = document.getElementById('urgency').value;
+			const icon = document.getElementById('icon').value;
+			if (window.opendeck) {
+				window.opendeck.setSettings({ title, body, urgency, icon });
+			}
+		}
+		if (window.opendeck) {
+			window.opendeck.onSettingsReceived = (settings) => {
+				if (settings.title) document.getElementById('title').value = settings.title;
+				if (settings.body) document.getElementById('body').value = settings.body;
+				if (settings.urgency) document.getElementById('urgency').value = settings.urgency;
+				if (settings.icon) document.getElementById('icon').value = settings.icon;
+			};
+		}
+	</script>
+</body>
+</html>
